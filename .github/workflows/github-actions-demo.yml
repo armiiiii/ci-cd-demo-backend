@@ -18,4 +18,4 @@ jobs:
       - name: Test backend
         run: npm test
       - name: Build project
-        run: npm build
+        run: npm run build
