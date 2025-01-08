@@ -6,7 +6,7 @@ export default class Calculator {
         return a-b;
     }
     public multiplication(a: number, b: number): number {
-        return a/b;
+        return a*b;
     }
     public division(a: number, b: number): number {
         if (b === 0) {
