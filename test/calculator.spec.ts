@@ -1,5 +1,5 @@
 import {assert} from 'chai';
-import Calculator from '../src/calculator';
+import Calculator from '../src/services/calculator';
 
 const calc = new Calculator();
 
