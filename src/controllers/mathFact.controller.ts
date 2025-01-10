@@ -6,16 +6,19 @@ export type MathFact = {
 }
 
 export class mathFactController {
-    public amountOfFacts: number;
-    public min: number = 1;
+    private amountOfFacts: Promise<number>;
     
     constructor(){
-        this.amountOfFacts = 1;
-        console.log(pool.query("SELECT * FROM mathfact"))
+        async function getAmountOfFacts(): Promise<number> {
+            const facts = await pool.query("SELECT * FROM mathfact");
+            return facts.rows.length;
+        }
+        this.amountOfFacts = getAmountOfFacts();
     }
 
     public async getRandomFact(): Promise<MathFact> {
-        const id: number = Math.floor(Math.random() * (this.min -  this.amountOfFacts) + this.min)
+        const min = 1;
+        const id: number = Math.floor(Math.random() * (min - (await this.amountOfFacts)) + min)
         const fact = await pool.query(`SELECT * FROM mathfact WHERE id=${id}`)
         return fact.rows[0]
     }
