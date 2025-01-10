@@ -1,40 +1,25 @@
-import pool from "../services/db";
-
-export type MathFact = {
-    id: number;
-    text: string;
-}
+import { mathFactModel, MathFact } from '../models/mathFact.model'
 
 export class mathFactController {
-    private amountOfFacts: Promise<number>;
-    
-    constructor(){
-        async function getAmountOfFacts(): Promise<number> {
-            const facts = await pool.query("SELECT * FROM mathfact");
-            return facts.rows.length;
-        }
-        this.amountOfFacts = getAmountOfFacts();
+    private mfm: mathFactModel;
+
+    constructor() {
+        this.mfm = new mathFactModel();
     }
 
     public async getRandomFact(): Promise<MathFact> {
-        const min = 1;
-        const id: number = Math.floor(Math.random() * (min - (await this.amountOfFacts)) + min)
-        const fact = await pool.query(`SELECT * FROM mathfact WHERE id=${id}`)
-        return fact.rows[0]
+        return this.mfm.getRandomFact();
     }
 
     public async createFact(text: string): Promise<MathFact> {
-        const fact = await pool.query(`INSERT INTO mathfact (text) values (${text}) RETURNING *`)
-        return fact.rows[0]
+        return this.mfm.createFact(text);
     }
 
     public async updateFact(id: number, text: string): Promise<MathFact> {
-        const fact = await pool.query(`UPDATE mathfact set text=${text} where id=${id} RETURNING *`)
-        return fact.rows[0]
+        return this.mfm.updateFact(id, text);
     }
 
     public async deleteFact(id: number): Promise<MathFact> {
-        const fact = await pool.query(`DELETE FROM mathfact WHERE id=${id}`)
-        return fact.rows[0]
+        return this.mfm.deleteFact(id);
     }
 }
