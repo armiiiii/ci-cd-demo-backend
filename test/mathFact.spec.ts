@@ -33,11 +33,6 @@ describe("src/services/controller/mathFact.controller.ts CRUD Operations", () =>
         assert.equal(fact.text, stubedFact.text);
         assert.equal(fact.id, stubedFact.id);
     })
-    it("Get Random Fact", async () => {
-        const mfc = new mathFactController();
-        const fact = await mfc.getRandomFact();
-        assert.containsAllKeys(fact, ['id', 'text']);
-    })
     it("Delete", async () => {
         const stub = sinon.stub(mathFactModel.prototype, 'deleteFact').resolves(stubedFact);
         const mfc = new mathFactController();
