@@ -1,37 +1,50 @@
 import { assert } from "chai";
+import sinon from 'sinon';
+import { faker } from '@faker-js/faker';
 
-import {MathFact, mathFactController} from "../src/controllers/mathFact.controller";
+import { MathFact, mathFactModel } from "../src/models/mathFact.model";
+import { mathFactController } from "../src/controllers/mathFact.controller";
 
-const mfc = new mathFactController();
+let text = "Exponentiation - is an operation, where we multiply some value by itself n times. E.G 4^3 = 4 * 4 * 4";
 
-
-let fact: MathFact;
 describe("src/services/controller/mathFact.controller.ts CRUD Operations", () => {
-    it("Create", () => {
-        const text = "Exponentiation - is a operation, where we multiply some value by itself n times. E.G 4^3 = 4 * 4 * 4";
-        mfc.createFact(text).then((factFetched) => {
-            assert.typeOf(factFetched, 'MathFact');
-            assert.equal(factFetched.text, text);
-            fact = factFetched;
-        });
+
+    const stubedFact: MathFact = {
+        id: faker.number.int(),
+        text: text,
+    } 
+
+    it("Create Fact", async () => {
+        const stub = sinon.stub(mathFactModel.prototype, 'createFact').resolves(stubedFact);
+        const mfc = new mathFactController();
+        const fact = await mfc.createFact(stubedFact.text);
+        assert.equal(stub.calledOnce, true);
+        assert.equal(fact.id, stubedFact.id);
+        assert.equal(fact.text, stubedFact.text);
+        assert.equal(fact.id, stubedFact.id);
     })
-    it("Update", () => {
-        const text = "Exponentiation - is an operation, where we multiply some value by itself n times. \n \
-                      4^3 = 4 * 4 * 4";
-        const id: number = fact.id;
-        mfc.updateFact(id, text).then((factFetched) => {
-            assert.typeOf(factFetched, 'MathFact');
-            assert.equal(factFetched.text, text);
-        });
+    it("Update Fact", async () => {
+        stubedFact.text = "Exponentiation - is a function, y=a^x, where a = const, x = arg. ";
+        const stub = sinon.stub(mathFactModel.prototype, 'updateFact').resolves(stubedFact);
+        const mfc = new mathFactController();
+        const fact = await mfc.updateFact(stubedFact.id, stubedFact.text);
+        assert.equal(stub.calledOnce, true);
+        assert.equal(fact.id, stubedFact.id);
+        assert.equal(fact.text, stubedFact.text);
+        assert.equal(fact.id, stubedFact.id);
     })
-    it("Get Random Fact", () => {
-        mfc.getRandomFact().then((fact) => {
-            assert.typeOf(fact, 'MathFact');
-        })
+    it("Get Random Fact", async () => {
+        const mfc = new mathFactController();
+        const fact = await mfc.getRandomFact();
+        assert.containsAllKeys(fact, ['id', 'text']);
     })
-    it("Delete", () => {
-        mfc.deleteFact(fact.id).then((factFetched) => {
-            assert.equal(fact.id, factFetched.id);
-        })
+    it("Delete", async () => {
+        const stub = sinon.stub(mathFactModel.prototype, 'deleteFact').resolves(stubedFact);
+        const mfc = new mathFactController();
+        const fact = await mfc.deleteFact(stubedFact.id);
+        assert.equal(stub.calledOnce, true);
+        assert.equal(fact.id, stubedFact.id);
+        assert.equal(fact.text, stubedFact.text);
+        assert.equal(fact.id, stubedFact.id);
     })
 })
